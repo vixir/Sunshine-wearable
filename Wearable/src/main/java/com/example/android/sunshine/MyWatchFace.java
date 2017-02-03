@@ -377,7 +377,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
             String day = Utility.getDay(dayOfWeek);
             if (mIsRound) {
                 RectF rectF = new RectF();
-                rectF.set(-bounds.width() / 2, bounds.height() / 2, bounds.width() + bounds.width() / 2, 2 * bounds.height());
+                rectF.set(-bounds.width() / 2, bounds.height() / 2 + mVerticalPadding * 2, bounds.width() + bounds.width() / 2, 2 * bounds.height());
                 canvas.drawArc(rectF, -180, 180, true, mPaint);
             } else {
                 canvas.drawRect(0, bounds.height(), bounds.width(), bounds.height() / 2 + 3 * mVerticalPadding, mPaint);
