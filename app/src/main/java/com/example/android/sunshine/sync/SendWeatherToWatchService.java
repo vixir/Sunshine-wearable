@@ -110,7 +110,7 @@ public class SendWeatherToWatchService extends IntentService implements GoogleAp
             int weatherId = todayWeatherCursor.getInt(INDEX_WEATHER_ID);
             double high = todayWeatherCursor.getDouble(INDEX_MAX_TEMP);
             double low = todayWeatherCursor.getDouble(INDEX_MIN_TEMP);
-            putDataMapReq.getDataMap().putString("WEATHER_DATA", weatherId+" "+high+" "+low+""+System.currentTimeMillis());
+            putDataMapReq.getDataMap().putString("WEATHER_DATA", weatherId+" "+high+" "+low);
         }
 
         todayWeatherCursor.close();

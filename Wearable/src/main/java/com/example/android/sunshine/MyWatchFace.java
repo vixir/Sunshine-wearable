@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -59,6 +60,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -69,6 +71,7 @@ import java.util.concurrent.TimeUnit;
 public class MyWatchFace extends CanvasWatchFaceService {
     private static final Typeface NORMAL_TYPEFACE =
             Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
+
 
     /**
      * Update rate in milliseconds for interactive mode. We update once a second since seconds are
@@ -200,7 +203,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
             mBackgroundPaint.setColor(mResources.getColor(R.color.blue));
 
             mTextPaint = new Paint();
-            mTextPaint = createTextPaint(mResources.getColor(R.color.digital_text));
+            mTextPaint = createDialPaint(mResources.getColor(R.color.digital_text));
 
             mTempHi = new Paint();
             mTempHi = createTextPaint(mResources.getColor(R.color.digital_text));
@@ -229,6 +232,16 @@ public class MyWatchFace extends CanvasWatchFaceService {
             releaseGoogleApiClient();
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             super.onDestroy();
+        }
+
+        private Paint createDialPaint(int textColor) {
+            Paint paint = new Paint();
+            paint.setColor(textColor);
+            AssetManager am = getAssets();
+            Typeface NORMAL_TYPEFAC = Typeface.createFromAsset(am, String.format(Locale.US, "fonts/%s", "DroidSans.ttf"));
+            paint.setTypeface(NORMAL_TYPEFAC);
+            paint.setAntiAlias(true);
+            return paint;
         }
 
         private Paint createTextPaint(int textColor) {
@@ -361,9 +374,6 @@ public class MyWatchFace extends CanvasWatchFaceService {
                 canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
                 canvas.drawBitmap(mBackgroundBitmap, 0, 0, null);
             }
-
-
-            // Draw H:MM in ambient mode or H:MM:SS in interactive mode.
             long now = System.currentTimeMillis();
             mCalendar.setTimeInMillis(now);
             int flags = DateUtils.FORMAT_SHOW_YEAR;
@@ -373,20 +383,22 @@ public class MyWatchFace extends CanvasWatchFaceService {
             canvas.drawText(text, mXOffset, mYOffset, mTextPaint);
             String amPm = (mCalendar.get(Calendar.AM_PM) == Calendar.AM) ? "AM" : "PM";
             canvas.drawText(amPm, mTextPaint.measureText(text) + mXOffset, mYOffset, mTempLo);
-            int dayOfWeek = mCalendar.get(Calendar.DAY_OF_WEEK);
-            String day = Utility.getDay(dayOfWeek);
-            if (mIsRound) {
-                RectF rectF = new RectF();
-                rectF.set(-bounds.width() / 2, bounds.height() / 2 + mVerticalPadding * 2, bounds.width() + bounds.width() / 2, 2 * bounds.height());
-                canvas.drawArc(rectF, -180, 180, true, mPaint);
-            } else {
-                canvas.drawRect(0, bounds.height(), bounds.width(), bounds.height() / 2 + 3 * mVerticalPadding, mPaint);
+            if (!isInAmbientMode()) {
+                int dayOfWeek = mCalendar.get(Calendar.DAY_OF_WEEK);
+                String day = Utility.getDay(dayOfWeek);
+                if (mIsRound) {
+                    RectF rectF = new RectF();
+                    rectF.set(-bounds.width() / 2, bounds.height() / 2 + mVerticalPadding * 2, bounds.width() + bounds.width() / 2, 2 * bounds.height());
+                    canvas.drawArc(rectF, -180, 180, true, mPaint);
+                } else {
+                    canvas.drawRect(0, bounds.height(), bounds.width(), bounds.height() / 2 + 3 * mVerticalPadding, mPaint);
+                }
+                canvas.drawText(mMinTemp, mXOffset + 2 * mHorizontalPadding, mYOffset + mTempLo.getTextSize() * 6 + mTextPaint.getTextSize(), mTempLo);
+                canvas.drawText(mMaxTemp, mXOffset + mHorizontalPadding, mYOffset + mTempLo.getTextSize() * 4 + mTextPaint.getTextSize(), mTempHi);
+                canvas.drawBitmap(mBitmap, mXOffset + mTempLo.measureText(mMinTemp) + mTempHi.measureText(mMaxTemp), mYOffset + mTextPaint.getTextSize() + mTempLo.getTextSize(), mTextPaint);
+                canvas.drawText(day, bounds.width() / 2 - mTempLo.measureText(day) / 2, mYOffset + 2 * mTempLo.getTextSize() + mVerticalPadding, mDay);
+                canvas.drawText(date, bounds.width() / 2 - mTempLo.measureText(date) / 2, mYOffset + 2 * mTempLo.getTextSize() + 3 * mVerticalPadding, mDay);
             }
-            canvas.drawText(mMinTemp, mXOffset + 2 * mHorizontalPadding, mYOffset + mTempLo.getTextSize() * 6 + mTextPaint.getTextSize(), mTempLo);
-            canvas.drawText(mMaxTemp, mXOffset + mHorizontalPadding, mYOffset + mTempLo.getTextSize() * 4 + mTextPaint.getTextSize(), mTempHi);
-            canvas.drawBitmap(mBitmap, mXOffset + mTempLo.measureText(mMinTemp) + mTempHi.measureText(mMaxTemp), mYOffset + mTextPaint.getTextSize() + mTempLo.getTextSize(), mTextPaint);
-            canvas.drawText(day, bounds.width() / 2 - mTempLo.measureText(day) / 2, mYOffset + 2 * mTempLo.getTextSize(), mDay);
-            canvas.drawText(date, bounds.width() / 2 - mTempLo.measureText(date) / 2, mYOffset + 2 * mTempLo.getTextSize() + 2 * mVerticalPadding, mDay);
         }
 
         /**
