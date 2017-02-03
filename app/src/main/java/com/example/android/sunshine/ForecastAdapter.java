@@ -16,6 +16,7 @@
 package com.example.android.sunshine;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.sunshine.sync.SendWeatherToWatchService;
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 import com.example.android.sunshine.utilities.SunshineWeatherUtils;
 
@@ -76,6 +78,9 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
         mContext = context;
         mClickHandler = clickHandler;
         mUseTodayLayout = mContext.getResources().getBoolean(R.bool.use_today_layout);
+        Intent sendWeatherDataTowatch = new Intent(mContext, SendWeatherToWatchService.class);
+        mContext.startService(sendWeatherDataTowatch);
+
     }
 
     /**

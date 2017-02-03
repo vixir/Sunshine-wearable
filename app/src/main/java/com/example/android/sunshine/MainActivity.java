@@ -267,8 +267,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onClick(long date) {
         Intent weatherDetailIntent = new Intent(MainActivity.this, DetailActivity.class);
         Uri uriForDateClicked = WeatherContract.WeatherEntry.buildWeatherUriWithDate(date);
-        Intent intent = new Intent(MainActivity.this,SendWeatherDataApi.class);
-        MainActivity.this.startActivity(intent);
         weatherDetailIntent.setData(uriForDateClicked);
         startActivity(weatherDetailIntent);
     }

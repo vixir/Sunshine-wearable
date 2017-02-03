@@ -56,7 +56,6 @@
 
         <!-- The manifest entry for our SettingsActivity. Each Activity requires a manifest entry -->
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".SendWeatherDataApi" />
         <!-- Our ContentProvider -->
         <provider
             android:name=".data.WeatherProvider"
@@ -69,6 +68,8 @@
             android:exported="false" />
 
         <!-- This is the Service declaration used in conjunction with FirebaseJobDispatcher -->
+        <service android:enabled="true" android:name=".sync.SendWeatherToWatchService"></service>
+
         <service
             android:name=".sync.SunshineFirebaseJobService"
             android:exported="false">

@@ -4,6 +4,7 @@
     <dimen name="digital_max_size">25dp</dimen>
     <dimen name="digital_text_size_round">45dp</dimen>
     <dimen name="digital_max_size_round">25dp</dimen>
+    <dimen name="digital_max_size_square">25dp</dimen>
     <dimen name="digital_x_offset">15dp</dimen>
     <dimen name="digital_x_offset_round">50dp</dimen>
     <dimen name="digital_y_offset">70dp</dimen>

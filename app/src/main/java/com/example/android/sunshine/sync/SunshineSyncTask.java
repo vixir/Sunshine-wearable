@@ -79,7 +79,8 @@ public class SunshineSyncTask {
                         WeatherContract.WeatherEntry.CONTENT_URI,
                         weatherValues);
 
-
+                Intent sendWeatherDataTowatch = new Intent(context, SendWeatherToWatchService.class);
+                context.startService(sendWeatherDataTowatch);
                 /*
                  * Finally, after we insert data into the ContentProvider, determine whether or not
                  * we should notify the user that the weather has been refreshed.
