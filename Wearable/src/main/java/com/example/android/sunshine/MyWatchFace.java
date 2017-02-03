@@ -143,7 +143,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
                     String[] response = dataMap.getString("WEATHER_DATA").split(" ");
                     Log.e(TAG, "WEATHER_DATA" + dataMap.getString("WEATHER_DATA"));
                     int weatherId = Integer.parseInt(response[0]);
-                    mMoodDrawable = mResources.getDrawable(R.drawable.ic_clear, null);
+                    mMoodDrawable = mResources.getDrawable(Utility.getSmallArtResourceIdForWeatherCondition(weatherId), null);
                     mBitmap = ((BitmapDrawable) mMoodDrawable).getBitmap();
                     mMaxTemp = (int) Double.parseDouble(response[1]) + "\u00b0";
                     mMinTemp = (int) Double.parseDouble(response[2]) + "\u00b0";
